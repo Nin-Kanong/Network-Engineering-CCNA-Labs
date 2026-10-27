@@ -47,7 +47,10 @@ The ``/25`` IPv4 subnet mask is ``255.255.255.128``. The IPv6 LANs use a ``/64``
 
 ### Part 1: Verify IPv4 directly connected networks
 
-#### Step 1: Open R1 and check interface status
+#### Step 1: Verify IPv4 addresses and port status on R1
+
+
+##### Open R1 and check interface status
 
 Click on **R1** -> **CLI**, then press `Enter`:
 
@@ -118,7 +121,7 @@ Now it up all.
 
 
 
-#### the R1 serial IPv4 address
+##### the R1 serial IPv4 address
 ````
 R1(config)# interface serial 0/1/0
 R1(config-if)# ip address 209.165.200.225 255.255.255.252
@@ -139,8 +142,6 @@ GigabitEthernet0/0/0   172.16.20.1     YES manual up                    up
 GigabitEthernet0/0/1   172.16.20.129   YES manual up                    up 
 Serial0/1/0            209.165.200.225 YES manual up                    up
 ````
-
-
 
 
 Find the gateway of last resort:
@@ -197,7 +198,7 @@ R1# show interfaces gigabitethernet 0/0/0
 
 
 
-#### Step 2: Test IPv4 connectivity
+#### Step 2: Verify connectivity
 
 ##### Check PC1's settings
 

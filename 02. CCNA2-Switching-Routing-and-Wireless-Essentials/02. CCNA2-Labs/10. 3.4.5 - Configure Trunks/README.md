@@ -59,11 +59,11 @@ S1> enable
 S1#
 ````
 
-````cisco
+````shell
 S1# show vlan brief
 ````
 **Output:**
-````
+````shell
 VLAN Name                             Status    Ports
 ---- -------------------------------- --------- -------------------------------
 1    default                          active    Fa0/1, Fa0/2, Fa0/3, Fa0/4

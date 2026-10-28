@@ -1,4 +1,4 @@
-<h1 align="center"> LAB 3.3.12 - VLAN Configuration </h1> 
+<h1 align="center"> LAB: 3.3.12 - VLAN Configuration </h1> 
 
 
 

@@ -1,4 +1,4 @@
-<h1 align="center"> 1.6.2 - Configure Basic Router Settings Physical Mode </h1>
+<h1 align="center"> LAB: 1.6.2 - Configure Basic Router Settings Physical Mode </h1>
 
 
 

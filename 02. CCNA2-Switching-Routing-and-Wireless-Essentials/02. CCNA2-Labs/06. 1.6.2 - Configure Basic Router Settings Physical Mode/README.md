@@ -7,6 +7,7 @@
 ### Lab Guide:
 
 
+[1.6.2 Packet Tracer  - Configure Basic Router Settings - Physical Mode.docx](https://github.com/user-attachments/files/34061846/1.6.2.Packet.Tracer.-.Configure.Basic.Router.Settings.-.Physical.Mode.docx)
 
 
 ---
@@ -67,12 +68,11 @@ flowchart LR
 
 ### Objectives
 
-Part 1: Set Up the Topology and Initialize Devices
+**Part 1: Set Up the Topology and Initialize Devices**
 
-Part 2: Configure Devices and Verify Connectivity
+**Part 2: Configure Devices and Verify Connectivity**
 
-Part 3: Display Router Information
-
+**Part 3: Display Router Information**
 
 
 ---

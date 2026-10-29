@@ -168,9 +168,9 @@ VLAN Name                             Status    Ports
 
 ### Part 2: Create additional VLANs on S2 and S3.
 
-#### Create VLANs on S3
+#### Create VLANs on S1
 
-Click **S2** and enter:
+Click **S1** and enter:
 ````cisco
 S1#enable
 S1#configure terminal

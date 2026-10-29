@@ -1,4 +1,4 @@
-<img width="870" height="332" alt="image" src="https://github.com/user-attachments/assets/3c852c8d-8955-4d55-a79b-a766c8c7a550" /><h1 align="center"> LAB: 3.4.6 - Configure VLAN and Trunking Physical Mode </h1>
+<h1 align="center"> LAB: 3.4.6 - Configure VLAN and Trunking Physical Mode </h1>
 
 
 ---
@@ -6,6 +6,7 @@
 
 ### Lab Guide:
 
+[3.4.6 Packet Tracer - Configure VLANs and Trunking - Physical Mode.docx](https://github.com/user-attachments/files/34129051/3.4.6.Packet.Tracer.-.Configure.VLANs.and.Trunking.-.Physical.Mode.docx)
 
 
 ---

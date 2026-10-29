@@ -140,30 +140,173 @@ Then don't forget to **Power On** **PC-A** and **PC-B**:
 
 On **PC-A**, open **Desktop** → **Terminal**, accept the default serial settings, and enter:
 
+<img width="877" height="410" alt="image" src="https://github.com/user-attachments/assets/42703fb9-118b-46b1-aa6e-2235620a3f19" />
+
+Then enter:
+````cisco
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname S1
+S1(config)# enable secret class
+S1(config)# line console 0
+S1(config-line)# password cisco
+S1(config-line)# login
+S1(config-line)# exit
+S1(config)# line vty 0 15
+S1(config-line)# password cisco
+S1(config-line)# login
+S1(config-line)# exit
+S1(config)# service password-encryption
+S1(config)# banner motd #WARNING: Unauthorized access is prohibited!#
+S1(config)# interface vlan 1
+S1(config-if)# ip address 192.168.1.11 255.255.255.0
+S1(config-if)# no shutdown
+S1(config-if)# exit
+````
+
+> Shut down unused ports while keeping the ports we need operational. In keep ``F0/1`` and ``F0/6`` active on **S1**.
+
+
+````cisco
+S1(config)# interface range f0/2-5,f0/7-24
+S1(config-if-range)# shutdown
+S1(config-if-range)# exit
+S1(config)# interface range g0/1-2
+S1(config-if-range)# shutdown
+S1(config-if-range)# end
+S1# clock set 10:00:00 29 October 2026
+S1# copy running-config startup-config
+````
+> Press **Enter** if prompted for the destination filename.
+
+
+---
+
+
+##### Configure S1
+
+On **PC-B**, open **Desktop** → **Terminal**:
+
+<img width="872" height="381" alt="image" src="https://github.com/user-attachments/assets/00d1b7e3-b7db-4333-ab89-be5a20e08e49" />
+
+
+Then press **Enter** if it show prompt.
+
+The type:
+````cisco
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname S2
+S2(config)# enable secret class
+S2(config)# line console 0
+S2(config-line)# password cisco
+S2(config-line)# login
+S2(config-line)# exit
+S2(config)# line vty 0 15
+S2(config-line)# password cisco
+S2(config-line)# login
+S2(config-line)# exit
+S2(config)# service password-encryption
+S2(config)# banner motd #WARNING: Unauthorized access is prohibited!#
+S2(config)# interface vlan 1
+S2(config-if)# ip address 192.168.1.12 255.255.255.0
+S2(config-if)# no shutdown
+S2(config-if)# exit
+S2(config)# interface range f0/2-17,f0/19-24
+S2(config-if-range)# shutdown
+S2(config-if-range)# exit
+S2(config)# interface range g0/1-2
+S2(config-if-range)# shutdown
+S2(config-if-range)# end
+S2# clock set 10:00:00 29 October 2026
+S2# copy running-config startup-config
+````
+
+> Keep ``F0/1`` and ``F0/18`` active on **S2**. If the **PC** is connected to a different port in our topology, adjust the port ranges accordingly.
+
+
+---
+
+
+#### Step 3: Configure PC hosts.
+
+For each **PC**, open **Desktop** → **IP Configuration**.
+
+##### PC-A Configuration
+
+| Setting         | Value           |
+| --------------- | --------------- |
+| IPv4 address    | `192.168.10.3`  |
+| Subnet mask     | `255.255.255.0` |
+| Default gateway | `192.168.10.1`  |
+
+<img width="873" height="681" alt="image" src="https://github.com/user-attachments/assets/ec6ea1cb-4fda-4fc5-85be-0d5e9c7f2f27" />
 
 
 
+##### PC-B Configuration
+
+| Setting         | Value           |
+| --------------- | --------------- |
+| IPv4 address    | `192.168.10.4`  |
+| Subnet mask     | `255.255.255.0` |
+| Default gateway | `192.168.10.1`  |
+
+<img width="871" height="665" alt="image" src="https://github.com/user-attachments/assets/217424c7-7c26-40ac-959b-84a75b2a131e" />
+
+
+---
+
+
+#### Step 4: Test connectivity.
+
+On **PC-A**, open **Command Prompt**:
+````
+ping 192.168.10.4
+ping 192.168.1.11
+````
+
+<img width="870" height="567" alt="image" src="https://github.com/user-attachments/assets/3b45b869-c150-4d26-b6f0-b8b4c524f7a4" />
+
+
+**On PC-B:**
+````
+ping 192.168.1.12
+````
+<img width="871" height="383" alt="image" src="https://github.com/user-attachments/assets/5c8d6a8e-d6d4-4520-9603-c70121aff3fb" />
+
+
+**On S1:**
+
+In this just click on **PC-A** -> **Desktop** -> **Terminal**, then click **Ok**:
+````
+S1# ping 192.168.1.12
+````
+**Output:**
+````
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.12, timeout is 2 seconds:
+..!!!
+Success rate is 60 percent (3/5), round-trip min/avg/max = 0/0/0 ms
+````
+
+
+Now the result is:
+
+| Test        | Expected result | Explanation                                                                                                                    |
+| ----------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| PC-A → PC-B | succeed     | Both PCs are in the same subnet, `192.168.10.0/24`, and can communicate if their switch ports are active and in the same VLAN. |
+| PC-A → S1   | Fails           | They are in different IP subnets: `192.168.10.0/24` and `192.168.1.0/24`. No router is configured to route between them.       |
+| PC-B → S2   | Fails           | They are in different IP subnets, and no router is configured to route between them.                                           |
+| S1 → S2     | Succeeds        | Both switch management addresses are in `192.168.1.0/24` and initially use VLAN 1, assuming the inter-switch link is active.   |
+
+----
 
 
 
+### Part 2: Create VLANs and Assign Switch Ports
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+In this we will create these four VLANs on both swtiches.
 
 
 

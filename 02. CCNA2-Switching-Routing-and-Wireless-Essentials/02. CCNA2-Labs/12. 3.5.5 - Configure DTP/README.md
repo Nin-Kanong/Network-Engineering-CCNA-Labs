@@ -6,6 +6,7 @@
 
 ### Lab Guide
 
+[3.5.5 Packet Tracer - Configure DTP.docx](https://github.com/user-attachments/files/34145495/3.5.5.Packet.Tracer.-.Configure.DTP.docx)
 
 
 ---
@@ -166,7 +167,7 @@ VLAN Name                             Status    Ports
 ---
 
 
-### Part 2: Create additional VLANs on S2 and S3.
+### Part 2: Create additional VLANs on S1, S2 and S3.
 
 #### Create VLANs on S1
 
@@ -979,19 +980,95 @@ All listed trunk interfaces should have status ``trunking``.
 ### Part 6: Verify end to end connectivity.
 
 
+#### Test PC1 to PC6 - VLAN 10
+
+On **PC1** -> **Desktop** -> **Command Prompt**:
+
+````
+ping 192.168.20.2
+````
+
+**Output:**
+````
+Pinging 192.168.10.2 with 32 bytes of data:
+
+Reply from 192.168.10.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.10.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.10.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.10.2: bytes=32 time<1ms TTL=128
+
+Ping statistics for 192.168.10.2:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+````
+
+
+Now in this it got success.
 
 
 
+#### Test PC2 to PC5 — VLAN 20
+
+On **Pc2**:
+
+````
+ping 192.168.20.2
+````
+**Output:**
+````
+Pinging 192.168.20.2 with 32 bytes of data:
+
+Reply from 192.168.20.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.20.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.20.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.20.2: bytes=32 time<1ms TTL=128
+
+Ping statistics for 192.168.20.2:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+````
+
+So in this we got successful.
+
+
+#### Test PC3 to PC4 — VLAN 30
+
+On **PC3**:
+````
+ping 192.168.30.2
+````
+
+**Output:**
+````
+Pinging 192.168.30.2 with 32 bytes of data:
+
+Reply from 192.168.30.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.30.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.30.2: bytes=32 time<1ms TTL=128
+Reply from 192.168.30.2: bytes=32 time<1ms TTL=128
+
+Ping statistics for 192.168.30.2:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+````
+
+
+Now it success all.
+
+---
 
 
 
+#### Scores:
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/23df7ecd-0dad-408c-8843-1c8ed985907e" />
+
+
+Now we got full score.
 
 
 
-
-
-
-
-
-
-
+----

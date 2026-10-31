@@ -173,8 +173,8 @@ VLAN Name                             Status    Ports
 
 Click **S1** and enter:
 ````cisco
-S1#enable
-S1#configure terminal
+S1# enable
+S1# configure terminal
 ````
 
 **VLAN 10:**
@@ -712,7 +712,7 @@ S2(config)# interface gigabitEthernet 0/1
 S2(config-if)# switchport trunk native vlan 999
 S2(config-if)# end
 ````
-> This assumes Gi0/1 is the trunk connection to S1, as specified in the lab.
+> This assumes ``Gi0/1`` is the trunk connection to S1, as specified in the lab.
 
 
 ````

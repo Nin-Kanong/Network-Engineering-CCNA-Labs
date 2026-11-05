@@ -589,7 +589,7 @@ Approximate round trip times in milli-seconds:
     Minimum = 0ms, Maximum = 1ms, Average = 0ms
 ````
 
-Now it response n=back.
+Now it response back.
 
 
 Now we got successful.

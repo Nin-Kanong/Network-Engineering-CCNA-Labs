@@ -625,14 +625,284 @@ S1(config)# end
 S1#
 ```
 
-
 ----
-
 
 
 #### Enable IPv4 routing
 
 This step turns **MLS** into a Layer 3 router between VLANs.
+
+##### Check the routing table enabling routing
+
+On **MLS**:
+````
+MLS> enable
+MLS# show ip route
+````
+**Output:**
+````
+Default gateway is not set
+
+Host               Gateway           Last Use    Total Uses  Interface
+ICMP redirect cache is empty
+````
+
+> So in this IP routing not yet been enabled.
+
+
+##### Enable IP routing
+````
+MLS# configure terminal
+MLS(config)# ip routing
+MLS(config)# end
+````
+
+
+
+##### Verify route
+````
+MLS# show ip route
+````
+**Output:**
+````
+Codes: C - connected, S - static, I - IGRP, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+C    192.168.10.0/24 is directly connected, Vlan10
+C    192.168.20.0/24 is directly connected, Vlan20
+C    192.168.30.0/24 is directly connected, Vlan30
+C    192.168.99.0/24 is directly connected, Vlan99
+     209.165.200.0/30 is subnetted, 1 subnets
+C       209.165.200.224 is directly connected, GigabitEthernet0/2
+````
+
+``C`` means Connected. These routes tell MLS that it can directly reach those networks.
+
+
+---
+
+#### Verify IPv4 end-to-end connectivity
+
+Now verify that **PCs** can communicate within their **VLANs** and across different **VLANs**.
+
+
+##### Check PC0 — VLAN 10
+
+Click on **PC0** -> **Desktop** -> **IP Configuration**:
+| Setting | Value |
+| :--- | :--- |
+| IPv4 address | `192.168.10.1` |
+| Subnet mask | `255.255.255.0` |
+| Default gateway | `192.168.10.254` |
+
+<img width="871" height="680" alt="image" src="https://github.com/user-attachments/assets/6d7025fc-0f31-4331-8350-bd0921901e67" />
+
+
+Then open **Command Prompt**:
+````
+ipconfig
+````
+<img width="865" height="526" alt="image" src="https://github.com/user-attachments/assets/12e50d26-f040-418c-ab80-e89d2d7daad6" />
+
+
+````
+ping 192.168.10.254
+ping 192.168.10.2
+````
+
+<img width="527" height="432" alt="image" src="https://github.com/user-attachments/assets/f0e3925d-d4b9-4fca-94fe-4015a7faad8d" />
+
+
+Now we got successful.
+
+
+##### Check PC1 - VLAN 20
+
+Click on **PC1** -> **Desktop** -> **IP Configuration**:
+
+| Setting | Value |
+| :--- | :--- |
+| IPv4 address | `192.168.20.1` |
+| Subnet mask | `255.255.255.0` |
+| Default gateway | `192.168.20.254` |
+
+<img width="876" height="662" alt="image" src="https://github.com/user-attachments/assets/d2bd76c0-5635-4242-a523-03689200fd20" />
+
+
+Then open **Command Prompt**:
+````
+ipconfig
+````
+<img width="867" height="557" alt="image" src="https://github.com/user-attachments/assets/5a7a19e1-8a90-4e49-9ef5-f72ae745b325" />
+
+
+````
+ping 192.168.20.254
+ping 192.168.20.2
+````
+
+<img width="500" height="427" alt="image" src="https://github.com/user-attachments/assets/16a37f45-37bc-4314-bea7-528bdff7c660" />
+
+
+
+---
+
+
+##### Check PC2 - VLAN 30
+Click on **PC2** -> **Desktop** -> **IP Configuration**:
+
+| Setting | Value |
+| :--- | :--- |
+| IPv4 address | `192.168.30.1` |
+| Subnet mask | `255.255.255.0` |
+| Default gateway | `192.168.30.254` |
+
+<img width="875" height="662" alt="image" src="https://github.com/user-attachments/assets/66037748-e226-4320-ab15-9709af9b1829" />
+
+
+Then open **Command Prompt**:
+
+````
+ipconfig
+````
+<img width="873" height="533" alt="image" src="https://github.com/user-attachments/assets/15047cca-1b69-4234-a4f5-c7cb5f4ad153" />
+
+
+
+````
+ping 192.168.30.254
+ping 192.168.30.2
+````
+
+<img width="524" height="425" alt="image" src="https://github.com/user-attachments/assets/2cd1b2e9-4147-4e9c-a4d2-c6d4292d757d" />
+
+
+---
+
+
+
+##### Check switch management connectivity
+
+Open **S1** → **CLI**:
+````
+enable
+ping 192.168.99.2
+ping 192.168.99.3
+ping 192.168.99.254
+````
+
+<img width="636" height="332" alt="image" src="https://github.com/user-attachments/assets/c60ea92a-ca14-46d9-b4c1-9ae75b1ff339" />
+
+
+Now it successful.
+
+
+##### Test inter-VLAN routing
+
+From **PC0**, run:
+````
+ping 192.168.20.1
+ping 192.168.30.1
+````
+<img width="497" height="421" alt="image" src="https://github.com/user-attachments/assets/af0dce7f-4de4-4e13-8c11-57fa572332ad" />
+
+
+Now it successful replies.
+
+> Now routes between VLAN 10, VLAN 20, and VLAN 30 using its SVIs.
+
+---
+
+
+##### Test IPv4 connectivity to Cloud
+
+From **MLS** or a **PC**, run:
+````
+ping 209.165.200.226
+````
+<img width="601" height="153" alt="image" src="https://github.com/user-attachments/assets/2cf8b3e6-977e-4189-aa5f-817355daf54e" />
+
+
+Now it successful replies.
+
+
+---
+
+
+
+
+### Part 3: Configure IPv6 Inter-VLAN Routing
+
+
+#### Step 1: Enable IPv6 routing
+Open **MLS** → **CLI**, then enter:
+````
+MLS> enable
+MLS# configure terminal
+MLS(config)# ipv6 unicast-routing
+MLS(config)# end
+MLS#
+````
+
+
+
+#### Step 2: Configure IPv6 addresses on MLS SVIs
+
+On our VLAN we need **IPv6** addresses on VLANs 10, 20, and 30.
+
+
+##### Configure VLAN 10****
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -141,7 +141,7 @@ MLS# configure terminal
 ##### Create VLAN 10
 ````
 MLS(config)# vlan 10
-MLS(config-vlan)# name staff
+MLS(config-vlan)# name Staff
 MLS(config-vlan)# exit
 ````
 

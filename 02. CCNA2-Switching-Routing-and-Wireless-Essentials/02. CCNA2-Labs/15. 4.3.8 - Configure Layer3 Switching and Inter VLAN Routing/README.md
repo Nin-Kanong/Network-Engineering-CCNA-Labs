@@ -858,37 +858,152 @@ MLS#
 On our VLAN we need **IPv6** addresses on VLANs 10, 20, and 30.
 
 
-##### Configure VLAN 10****
+##### Configure VLAN 10
+
+````
+MLS# configure terminal
+MLS(config)# interface vlan 10
+MLS(config-if)# ipv6 address 2001:DB8:ACAD:10::1/64
+MLS(config-if)# no shutdown
+MLS(config-if)# exit
+````
+
+##### Configure VLAN 20
+````
+MLS(config)# interface vlan 20
+MLS(config-if)# ipv6 address 2001:DB8:ACAD:20::1/64
+MLS(config-if)# no shutdown
+MLS(config-if)# exit
+````
 
 
 
 
+##### Create VLAN 30
+````
+MLS(config)# interface vlan 30
+MLS(config-if)# ipv6 address 2001:DB8:ACAD:30::1/64
+MLS(config-if)# no shutdown
+MLS(config-if)# exit
+````
+
+
+Then finished it:
+````
+MLS(config)# end
+````
+
+
+----
+
+
+#### Step 3: Configure IPv6 on G0/2
+
+
+We IPv4 address on ``G0/2`` is already configured. Now add its IPv6 address.
+
+````
+MLS# configure terminal
+MLS(config)# interface gigabitEthernet 0/2
+MLS(config-if)# ipv6 address 2001:DB8:ACAD:A::1/64
+MLS(config-if)# no shutdown
+MLS(config-if)# exit
+MLS(config)# end
+````
+
+---
+
+
+#### Step 4: Verify the IPv6 configuration
+
+##### Check interface addresses
+
+````
+MLS# show ipv6 interface brief
+````
+**Output:**
+````
+GigabitEthernet0/1         [up/up]
+    unassigned
+GigabitEthernet0/2         [up/up]
+    FE80::201:64FF:FED8:8B1A
+    2001:DB8:ACAD:A::1
+Vlan1                      [administratively down/down]
+    unassigned
+Vlan10                     [up/up]
+    FE80::202:16FF:FEA2:CB01
+    2001:DB8:ACAD:10::1
+Vlan20                     [up/up]
+    FE80::202:16FF:FEA2:CB02
+    2001:DB8:ACAD:20::1
+Vlan30                     [up/up]
+    FE80::202:16FF:FEA2:CB03
+    2001:DB8:ACAD:30::1
+Vlan99                     [up/up]
+    unassigned
+````
+
+
+---
+
+
+##### Check IPv6 routing table
+
+````
+MLS# show ipv6 route
+````
+**Output:**
+````
+IPv6 Routing Table - 10 entries
+Codes: C - Connected, L - Local, S - Static, R - RIP, B - BGP
+       U - Per-user Static route, M - MIPv6
+       I1 - ISIS L1, I2 - ISIS L2, IA - ISIS interarea, IS - ISIS summary
+       ND - ND Default, NDp - ND Prefix, DCE - Destination, NDr - Redirect
+       O - OSPF intra, OI - OSPF inter, OE1 - OSPF ext 1, OE2 - OSPF ext 2
+       ON1 - OSPF NSSA ext 1, ON2 - OSPF NSSA ext 2
+       D - EIGRP, EX - EIGRP external
+S   ::/0 [1/0]
+     via 2001:DB8:ACAD:A::2, GigabitEthernet0/2
+C   2001:DB8:ACAD:A::/64 [0/0]
+     via ::, GigabitEthernet0/2
+L   2001:DB8:ACAD:A::1/128 [0/0]
+     via ::, GigabitEthernet0/2
+C   2001:DB8:ACAD:10::/64 [0/0]
+     via ::, Vlan10
+L   2001:DB8:ACAD:10::1/128 [0/0]
+     via ::, Vlan10
+C   2001:DB8:ACAD:20::/64 [0/0]
+     via ::, Vlan20
+L   2001:DB8:ACAD:20::1/128 [0/0]
+     via ::, Vlan20
+C   2001:DB8:ACAD:30::/64 [0/0]
+     via ::, Vlan30
+L   2001:DB8:ACAD:30::1/128 [0/0]
+     via ::, Vlan30
+L   FF00::/8 [0/0]
+     via ::, Null0
+````
+
+
+> local (``L``) routes for the interface addresses.
+
+---
+
+
+#### Step 5: Configure IPv6 addresses on PC3, PC4, and PC5
+
+The activity only requires IPv6 on PC3, PC4, and PC5.
+
+
+Click the **PC**, Select Desktop.
 
 
 
+Open IP Configuration.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Configure its IPv4 and IPv6 settings.
 
 
 

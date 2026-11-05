@@ -56,12 +56,12 @@
 4. Enter privileged EXEC mode:
 
 ````
-S1>enable
+S1> enable
 S1#
 ````
 
 ````cisco
-S1#show vlan brief
+S1# show vlan brief
 ````
 **Output:**
 ````cisco

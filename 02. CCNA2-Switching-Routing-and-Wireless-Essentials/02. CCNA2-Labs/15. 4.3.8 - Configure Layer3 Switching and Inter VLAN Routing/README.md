@@ -70,21 +70,94 @@ MLS# configure terminal
 ````
 
 
+#### Configure G0/2 as a routed port:
+
+A multilayer switch normally uses switchports for Layer 2 switching. The ``no switchport`` command converts ``G0/2`` into a Layer 3 routed interface.
+
+````
+MLS(config)# interface gigabitEthernet 0/2
+MLS(config-if)# no switchport
+MLS(config-if)# ip address 209.165.200.225 255.255.255.252
+MLS(config-if)# no shutdown
+MLS(config-if)# exit
+MLS(config)# end
+````
+
+
+| Command | Purpose |
+| :--- | :--- |
+| `no switchport` | Converts the port into a Layer 3 routed interface |
+| `ip address` | Assigns the IPv4 address |
+| `no shutdown` | Enables the interface |
+
+---
+
+
+#### Verify the routed interface
+````
+MLS# show ip interface brief
+````
+
+<img width="657" height="455" alt="image" src="https://github.com/user-attachments/assets/5591ff31-4306-44b7-a956-951b8d3328be" />
+
+
+Now it show `up`.
+
+
+#### Test connectivity to cloud
+On **MLS**, run:
+````
+ping 209.165.200.226
+````
+
+**Output:**
+````
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 209.165.200.226, timeout is 2 seconds:
+.!!!!
+Success rate is 80 percent (4/5), round-trip min/avg/max = 0/0/0 ms
+````
+
+> Now **MLS** can communicate with the Cloud through its directly connected network.
+
+---
 
 
 
+### Part 2: Configure Inter-VLAN Routing
 
 
+#### Step 1: Add VLANs.
+In this we will add **VLANs** on **MLS**.
 
 
+Open **MLS** -> **CLI**, then enter:
+````
+MLS> enable
+MLS# configure terminal
+````
 
 
+##### Create VLAN 10
+````
+MLS(config)# vlan 10
+MLS(config-vlan)# name staff
+MLS(config-vlan)# exit
+````
 
+##### Create VLAN 20
+````
+MLS(config)# vlan 20
+MLS(config-vlan)# name Student
+MLS(config-vlan)# exit
+````
 
-
-
-
-
+##### Create VLAN 30
+````
+MLS(config)# vlan 30
+MLS(config-vlan)# name Faculty
+MLS(config-vlan)# exit
+````
 
 
 

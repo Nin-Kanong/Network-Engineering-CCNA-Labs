@@ -233,42 +233,406 @@ MLS(config-if)# exit
 ##### Configure VLAN 30
 
 ````
-MLS(config)#interface vlan 30
-MLS(config-if)#
-%LINK-5-CHANGED: Interface Vlan30, changed state to up
-
-MLS(config-if)#ip address 192.168.30.254 255.255.255.0
-MLS(config-if)#no shutdown
-MLS(config-if)#exit
+MLS(config)# interface vlan 30
+MLS(config-if)# ip address 192.168.30.254 255.255.255.0
+MLS(config-if)# no shutdown
+MLS(config-if)# exit
 ````
-
-
-
-
-
-
 
 
 
 
 ##### Configure VLAN 99
 
+````
+MLS(config)# interface vlan 99
+MLS(config-if)# ip address 192.168.99.254 255.255.255.0
+MLS(config-if)# no shutdown
+MLS(config-if)# exit
+````
+
+
+##### Exit and Verify
+````
+MLS(config)# end
+MLS# show ip interface brief
+````
+**Output:**
+````
+Interface              IP-Address      OK? Method Status                Protocol 
+FastEthernet0/1        unassigned      YES unset  down                  down 
+FastEthernet0/2        unassigned      YES unset  down                  down 
+FastEthernet0/3        unassigned      YES unset  down                  down 
+FastEthernet0/4        unassigned      YES unset  down                  down 
+FastEthernet0/5        unassigned      YES unset  down                  down 
+FastEthernet0/6        unassigned      YES unset  down                  down 
+FastEthernet0/7        unassigned      YES unset  down                  down 
+FastEthernet0/8        unassigned      YES unset  down                  down 
+FastEthernet0/9        unassigned      YES unset  down                  down 
+FastEthernet0/10       unassigned      YES unset  down                  down 
+FastEthernet0/11       unassigned      YES unset  down                  down 
+FastEthernet0/12       unassigned      YES unset  down                  down 
+FastEthernet0/13       unassigned      YES unset  down                  down 
+FastEthernet0/14       unassigned      YES unset  down                  down 
+FastEthernet0/15       unassigned      YES unset  down                  down 
+FastEthernet0/16       unassigned      YES unset  down                  down 
+FastEthernet0/17       unassigned      YES unset  down                  down 
+FastEthernet0/18       unassigned      YES unset  down                  down 
+FastEthernet0/19       unassigned      YES unset  down                  down 
+FastEthernet0/20       unassigned      YES unset  down                  down 
+FastEthernet0/21       unassigned      YES unset  down                  down 
+FastEthernet0/22       unassigned      YES unset  down                  down 
+FastEthernet0/23       unassigned      YES unset  down                  down 
+FastEthernet0/24       unassigned      YES unset  down                  down 
+GigabitEthernet0/1     unassigned      YES unset  up                    up 
+GigabitEthernet0/2     209.165.200.225 YES manual up                    up 
+Vlan1                  unassigned      YES unset  administratively down down 
+Vlan10                 192.168.10.254  YES manual up                    down 
+Vlan20                 192.168.20.254  YES manual up                    down 
+Vlan30                 192.168.30.254  YES manual up                    down 
+Vlan99                 192.168.99.254  YES manual up                    down
+````
+
+The SVI line protocol should become ``up`` when its VLAN has an active Layer 2 port or an operational trunk carrying that VLAN. If an SVI is ``down/down``, check its VLAN and port connectivity.
+
+---
+
+
+#### Configure trunking on MLS
+
+The connection between **MLS** and **S1** must carry traffic from multiple VLANs.
+
+````
+MLS# enable
+MLS# configure terminal
+````
+
+
+##### Select MLS G0/1
+````
+MLS(config)# interface gigabitEthernet 0/1
+MLS(config-if)# switchport trunk encapsulation dot1q
+MLS(config-if)# switchport mode trunk
+MLS(config-if)# switchport trunk native vlan 99
+MLS(config-if)# no shutdown
+MLS(config-if)# exit
+MLS(config)# end
+````
+
+##### Verify the MLS trunk
+````
+MLS# show interfaces trunk
+````
+**Output:**
+````
+Port        Mode         Encapsulation  Status        Native vlan
+Gig0/1      on           802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Gig0/1      1-1005
+
+Port        Vlans allowed and active in management domain
+Gig0/1      1,10,20,30,99,999
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Gig0/1      1,10,20,30,99,999
+````
+
+Now we see: `Gig0/1      on           802.1q         trunking      99`.
+
+
+---
+
+
+#### Configure trunking on S1
+
+Now we configure the other end of the connection.
+
+
+Click on **S1** -> **CLI**, press **Enter**.
+
+Then enter:
+````
+S1> enable
+S1# configure terminal
+S1(config)# interface gigabit
+S1(config)# interface gigabitEthernet 0/1
+S1(config-if)# switchport mode trunk
+S1(config-if)# no shutdown
+S1(config-if)# end
+````
+
+
+> MLS ``G0/1`` and **S1** ``G0/1`` must agree on trunking and native VLAN 99. Otherwise, the link might not operate as intended or may report a native VLAN mismatch.
+
+
+Then verify:
+````
+S1# show interface trunk
+````
+**Output:**
+````
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      999
+Fa0/2       on           802.1q         trunking      999
+Gig0/1      on           802.1q         trunking      99
+
+Port        Vlans allowed on trunk
+Fa0/1       1-1005
+Fa0/2       1-1005
+Gig0/1      1-1005
+
+Port        Vlans allowed and active in management domain
+Fa0/1       1,10,20,30,99,999
+Fa0/2       1,10,20,30,99,999
+Gig0/1      1,10,20,30,99,999
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       1,10,20,30,99,999
+Fa0/2       1,10,20,30,99,999
+Gig0/1      1,10,20,30,99,999
+````
 
 
 
+**Check the native VLAN:**
+````
+S1# show interfaces gigabitEthernet 0/1 switchport
+````
+**Output:**
+````
+Name: Gig0/1
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: trunk
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: On
+Access Mode VLAN: 1 (default)
+Trunking Native Mode VLAN: 99 (Management)
+Voice VLAN: none
+Administrative private-vlan host-association: none
+Administrative private-vlan mapping: none
+Administrative private-vlan trunk native VLAN: none
+Administrative private-vlan trunk encapsulation: dot1q
+Administrative private-vlan trunk normal VLANs: none
+Administrative private-vlan trunk private VLANs: none
+Operational private-vlan: none
+Trunking VLANs Enabled: All
+Pruning VLANs Enabled: 2-1001
+Capture Mode Disabled
+Capture VLANs Allowed: ALL
+Protected: false
+Unknown unicast blocked: disabled
+Unknown multicast blocked: disabled
+Appliance trust: none
+````
+
+
+---
+
+
+#### Verify switch management addresses
+
+On our addressing table includes three management addresses:
+
+- S1: ``192.168.99.1/24``
+- S2: ``192.168.99.2/24``
+- S3: ``192.168.99.3/24``
+
+
+##### Check on S1
+
+Then check each:
+````
+S1# show ip interface brief
+````
+**Output:**
+
+````
+Interface              IP-Address      OK? Method Status                Protocol 
+FastEthernet0/1        unassigned      YES manual up                    up 
+FastEthernet0/2        unassigned      YES manual up                    up 
+FastEthernet0/3        unassigned      YES manual down                  down 
+FastEthernet0/4        unassigned      YES manual down                  down 
+FastEthernet0/5        unassigned      YES manual down                  down 
+FastEthernet0/6        unassigned      YES manual down                  down 
+FastEthernet0/7        unassigned      YES manual down                  down 
+FastEthernet0/8        unassigned      YES manual down                  down 
+FastEthernet0/9        unassigned      YES manual down                  down 
+FastEthernet0/10       unassigned      YES manual down                  down 
+FastEthernet0/11       unassigned      YES manual down                  down 
+FastEthernet0/12       unassigned      YES manual down                  down 
+FastEthernet0/13       unassigned      YES manual down                  down 
+FastEthernet0/14       unassigned      YES manual down                  down 
+FastEthernet0/15       unassigned      YES manual down                  down 
+FastEthernet0/16       unassigned      YES manual down                  down 
+FastEthernet0/17       unassigned      YES manual down                  down 
+FastEthernet0/18       unassigned      YES manual down                  down 
+FastEthernet0/19       unassigned      YES manual down                  down 
+FastEthernet0/20       unassigned      YES manual down                  down 
+FastEthernet0/21       unassigned      YES manual down                  down 
+FastEthernet0/22       unassigned      YES manual down                  down 
+FastEthernet0/23       unassigned      YES manual down                  down 
+FastEthernet0/24       unassigned      YES manual down                  down 
+GigabitEthernet0/1     unassigned      YES manual up                    up 
+GigabitEthernet0/2     unassigned      YES manual down                  down 
+Vlan1                  unassigned      YES manual administratively down down 
+Vlan99                 192.168.99.1    YES manual up                    up
+````
+
+Now we got and see it have.
+
+
+##### Chech on S2:
+````
+S2> enable
+S2# show ip interface brief
+````
+**Output:**
+````
+Interface              IP-Address      OK? Method Status                Protocol 
+FastEthernet0/1        unassigned      YES manual up                    up 
+FastEthernet0/2        unassigned      YES manual down                  down 
+FastEthernet0/3        unassigned      YES manual up                    up 
+FastEthernet0/4        unassigned      YES manual down                  down 
+FastEthernet0/5        unassigned      YES manual down                  down 
+FastEthernet0/6        unassigned      YES manual down                  down 
+FastEthernet0/7        unassigned      YES manual down                  down 
+FastEthernet0/8        unassigned      YES manual down                  down 
+FastEthernet0/9        unassigned      YES manual down                  down 
+FastEthernet0/10       unassigned      YES manual down                  down 
+FastEthernet0/11       unassigned      YES manual down                  down 
+FastEthernet0/12       unassigned      YES manual down                  down 
+FastEthernet0/13       unassigned      YES manual up                    up 
+FastEthernet0/14       unassigned      YES manual down                  down 
+FastEthernet0/15       unassigned      YES manual down                  down 
+FastEthernet0/16       unassigned      YES manual down                  down 
+FastEthernet0/17       unassigned      YES manual down                  down 
+FastEthernet0/18       unassigned      YES manual down                  down 
+FastEthernet0/19       unassigned      YES manual down                  down 
+FastEthernet0/20       unassigned      YES manual down                  down 
+FastEthernet0/21       unassigned      YES manual down                  down 
+FastEthernet0/22       unassigned      YES manual down                  down 
+FastEthernet0/23       unassigned      YES manual up                    up 
+FastEthernet0/24       unassigned      YES manual down                  down 
+GigabitEthernet0/1     unassigned      YES manual down                  down 
+GigabitEthernet0/2     unassigned      YES manual down                  down 
+Vlan1                  unassigned      YES manual administratively down down 
+Vlan99                 192.168.99.2    YES manual up                    up
+````
+
+Now we see see it.
+
+
+##### Check S3
+
+````
+S3> enable
+S3# show ip interface brief
+````
+
+**Output:**
+````
+Interface              IP-Address      OK? Method Status                Protocol 
+FastEthernet0/1        unassigned      YES manual down                  down 
+FastEthernet0/2        unassigned      YES manual up                    up 
+FastEthernet0/3        unassigned      YES manual up                    up 
+FastEthernet0/4        unassigned      YES manual down                  down 
+FastEthernet0/5        unassigned      YES manual down                  down 
+FastEthernet0/6        unassigned      YES manual down                  down 
+FastEthernet0/7        unassigned      YES manual down                  down 
+FastEthernet0/8        unassigned      YES manual down                  down 
+FastEthernet0/9        unassigned      YES manual down                  down 
+FastEthernet0/10       unassigned      YES manual down                  down 
+FastEthernet0/11       unassigned      YES manual down                  down 
+FastEthernet0/12       unassigned      YES manual down                  down 
+FastEthernet0/13       unassigned      YES manual up                    up 
+FastEthernet0/14       unassigned      YES manual down                  down 
+FastEthernet0/15       unassigned      YES manual down                  down 
+FastEthernet0/16       unassigned      YES manual down                  down 
+FastEthernet0/17       unassigned      YES manual down                  down 
+FastEthernet0/18       unassigned      YES manual down                  down 
+FastEthernet0/19       unassigned      YES manual down                  down 
+FastEthernet0/20       unassigned      YES manual down                  down 
+FastEthernet0/21       unassigned      YES manual down                  down 
+FastEthernet0/22       unassigned      YES manual down                  down 
+FastEthernet0/23       unassigned      YES manual up                    up 
+FastEthernet0/24       unassigned      YES manual down                  down 
+GigabitEthernet0/1     unassigned      YES manual down                  down 
+GigabitEthernet0/2     unassigned      YES manual down                  down 
+Vlan1                  unassigned      YES manual administratively down down 
+Vlan99                 192.168.99.3    YES manual up                    up
+````
+
+Now we see.
+
+
+---
+
+
+In this if don't see it just configure it.
+
+**S1**:
+
+```
+S3> enable
+S3# configure terminal
+S3(config)# vlan 99
+S3(config-vlan)# name Management
+S3(config-vlan)# exit
+S3(config)# interface vlan 99
+S3(config-if)# ip address 192.168.99.1 255.255.255.0
+S3(config-if)# no shutdown
+S3(config-if)# exit
+S3(config)# ip default-gateway 192.168.99.254
+S3(config)# end
+S3#
+```
 
 
 
+**S2:**
+```
+S2> enable
+S2# configure terminal
+S2(config)# vlan 99
+S2(config-vlan)# name Management
+S2(config-vlan)# exit
+S2(config)# interface vlan 99
+S2(config-if)# ip address 192.168.99.2 255.255.255.0
+S2(config-if)# no shutdown
+S2(config-if)# exit
+S2(config)# ip default-gateway 192.168.99.254
+S2(config)# end
+S2#
+```
+
+
+**S3:**
+```
+S1> enable
+S1# configure terminal
+S1(config)# vlan 99
+S1(config-vlan)# name Management
+S1(config-vlan)# exit
+S1(config)# interface vlan 99
+S1(config-if)# ip address 192.168.99.3 255.255.255.0
+S1(config-if)# no shutdown
+S1(config-if)# exit
+S1(config)# ip default-gateway 192.168.99.254
+S1(config)# end
+S1#
+```
+
+
+----
 
 
 
+#### Enable IPv4 routing
 
-
-
-
-
-
-
+This step turns **MLS** into a Layer 3 router between VLANs.
 
 
 

@@ -7,6 +7,9 @@
 ## Lab Guide
 
 
+[4.3.8 Packet Tracer - Configure Layer 3 Switching and Inter-VLAN Routing.docx](https://github.com/user-attachments/files/34549466/4.3.8.Packet.Tracer.-.Configure.Layer.3.Switching.and.Inter-VLAN.Routing.docx)
+
+
 
 
 ---
@@ -987,64 +990,17 @@ L   FF00::/8 [0/0]
 
 > local (``L``) routes for the interface addresses.
 
----
-
-
-#### Step 5: Configure IPv6 addresses on PC3, PC4, and PC5
-
-The activity only requires IPv6 on PC3, PC4, and PC5.
-
-
-Click the **PC**, Select Desktop.
+------
 
 
 
-Open IP Configuration.
+### Scoreboard
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/a375bb81-a5ca-4892-b0d5-71fe2857aae8" />
+
+
+Now we completed and got fulll score.
 
 
 
-Configure its IPv4 and IPv6 settings.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+------

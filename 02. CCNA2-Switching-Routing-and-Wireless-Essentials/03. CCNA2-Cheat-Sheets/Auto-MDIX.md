@@ -119,18 +119,6 @@ With Auto-MDIX enabled, either cable type can be used.
 | Port is disabled        | Use `no shutdown`                      |
 | Cannot verify Auto-MDIX | Check switch model and command support |
 
-## **8. Quick Exam Revision**
-
-| Question                                        | Answer                                           |
-| ----------------------------------------------- | ------------------------------------------------ |
-| What does Auto-MDIX do?                         | Automatically detects cable type                 |
-| Which command enables it?                       | `mdix auto`                                      |
-| Which command disables it?                      | `no mdix auto`                                   |
-| Which mode is required?                         | Interface configuration mode                     |
-| What speed setting should be used?              | `speed auto`                                     |
-| What duplex setting should be used?             | `duplex auto`                                    |
-| How do you verify it?                           | `show controllers ethernet-controller fa0/1 phy` |
-| Does it support straight-through and crossover? | Yes                                              |
 
 **Most important commands to memorize**
 

@@ -26,7 +26,7 @@ First in this click on **PC2** -> **Desktop** -> **Command Prompt**:
 ipconfig
 ```  
 **Output:**
-```
+```cmd
 FastEthernet0 Connection:(default port)
 
    Connection-specific DNS Suffix..: 
@@ -72,7 +72,7 @@ S1> enable
 S1# show spanning-tree vlan 1
 ````
 **Output:**
-````
+````cmd
 Interface        Role Sts Cost      Prio.Nbr Type
 ---------------- ---- --- --------- -------- --------------------------------
 Gi0/1            Desg FWD 4         128.25   P2p
@@ -82,7 +82,30 @@ Fa0/1            Desg FWD 19        128.1    P2p
 
 
 
+Then repeat it all Switch.
 
+---
+
+
+
+### Part 2: Observe spanning-tree convergence
+
+#### Step 1: Remove the connection between S1 and S2.
+
+In this click on **S3** -> **CLI**, then press **Enter**:
+
+````
+S3> enable
+S3# show spanning-tree vlan 1
+````
+
+**Output:**
+````
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Gi0/2            Altn BLK 4         128.26   P2p
+Gi0/1            Root FWD 4         128.25   P2p
+````
 
 
 

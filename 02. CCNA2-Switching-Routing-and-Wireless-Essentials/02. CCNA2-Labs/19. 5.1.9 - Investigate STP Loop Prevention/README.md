@@ -1,4 +1,4 @@
-<h1 align="center"> 5.1.9 - Investigate STP Loop Prevention </h1>
+<h1 align="center"> LAB: 5.1.9 - Investigate STP Loop Prevention </h1>
 
 
 
